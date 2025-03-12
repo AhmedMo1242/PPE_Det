@@ -76,10 +76,10 @@ Each YOLO annotation file follows a structured format where each line represents
 
 
 
-### 🔗 Dataset Access
+### Dataset Access
 The PPE-Det dataset can be accessed via this [Google Drive Link](https://drive.google.com/drive/folders/1RPhOT1OLkAopfAbRdLiQo_hbQeRj2HT6?usp=sharing).
 
-### 📸 Sample Images
+### Sample Images
 Below are sample images representing the three distance ranges:
 - **Far Range**: ![Far Range Image](Images/far.jpg)
 - **Mid Range**: ![Mid Range Image](Images/mid.jpg)
@@ -200,3 +200,21 @@ Inference latency was measured on a Raspberry Pi 5 using PyTorch and NCNN format
 - The NCNN backend provides a significant reduction in inference latency, especially for YOLOv5n and YOLOv8n.
 - Inference latency is not significantly affected by camera distance.
 
+---
+## Running the Experiment
+
+To reproduce the results of this project, there are two available methods:
+1. **YOLO Versions:** Located inside the directory `/code/yolo_versions`.
+2. **Non-YOLO Versions:** Located inside the directory `/code/non_yolo_versions`.
+
+Please refer to the respective directories for detailed instructions and implementation.
+
+---
+
+This work is submitted to the ISBcom 2025 conference. The authors with equal contribution are:
+
+- Abdelaziz Essam  
+- Ahmed Yasser  
+- Ahmed Hassan  
+
+The project was conducted under the supervision of **Prof. Walid Gomaa** at the Computer Science Engineering (CSE) Department, Egypt Japan University of Science and Technology (EJUST).
