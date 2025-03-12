@@ -81,13 +81,15 @@ The PPE-Det dataset can be accessed via this [Google Drive Link](https://drive.g
 
 ### 📸 Sample Images
 Below are sample images representing the three distance ranges:
-- **Far Range**: ![Far Range Image](Images\far.jpg)
-- **Mid Range**: ![Mid Range Image](Images\mid.jpg)
-- **Near Range**: ![Near Range Image](Images\near.jpg)
+- **Far Range**: ![Far Range Image](Images/far.jpg)
+- **Mid Range**: ![Mid Range Image](Images/mid.jpg)
+- **Near Range**: ![Near Range Image](Images/near.jpg)
 
 
+---
+## Methods 
 
-<!-- ### Models Trained on the PPE-Det Dataset
+### Selected Models
 The following models were trained and evaluated on the PPE-Det dataset for object detection:
 
 | Model       | Architecture | Description | 
@@ -100,4 +102,101 @@ The following models were trained and evaluated on the PPE-Det dataset for objec
 | YOLOX-Nano  | Nano variant | Efficient object detection designed specifically for mobile and edge devices. |
 | NanoDet-M   | Lightweight anchor-free model | Specializes in fast and efficient object detection. |
 
-These models were evaluated based on metrics such as **Mean Average Precision (mAP), Inference Time, and Model Size**. Performance evaluations were conducted on a **Raspberry Pi 5** to simulate real-world edge deployment scenarios. -->
+These models were evaluated based on metrics such as **Mean Average Precision (mAP) and Inference Time**. Performance evaluations were conducted on a **Raspberry Pi 5** to simulate real-world edge deployment scenarios.
+
+### Models  Comparison
+
+| Model         | Parameters (M) | GFLOPS |
+|---------------|----------------|--------|
+| YOLOv5n       | 2.5            | 7.1    |
+| YOLOv8n       | 3              | 8.1    |
+| YOLOv9t       | 1.97           | 7.6    |
+| YOLOv10n      | 2.7            | 8.2    |
+| YOLOv11n      | 2.58           | 6.3    |
+| YOLOX-Nano    | 0.9            | 1.08   |
+| NanoDet-M     | 0.95           | 0.72   |
+| MobileNet-SSD | 2.25           | 0.85   |
+
+### Architectural Overview
+
+- **YOLOv5n:** Uses Cross-Stage Partial Networks (CSPNet) for enhanced gradient flow and reduced computational redundancy. Incorporates depthwise separable convolutions and a refined PANet-based neck for balanced detection speed and accuracy.
+
+- **YOLOv8n:** Implements an anchor-free detection paradigm, improving localization precision with adaptive spatial feature fusion for efficient multi-scale learning.
+
+- **YOLOv9t:** Integrates Transformer-based modules to enhance long-range dependencies and feature reuse. Utilizes depthwise separable convolutions to boost computational efficiency.
+
+- **YOLOv10n:** Combines convolutional and attention-based techniques with a streamlined detection head, improving detection robustness and reducing parameter complexity.
+
+- **YOLOv11n:** Incorporates enhanced multi-scale feature fusion and knowledge distillation mechanisms. Optimized activation functions and lightweight attention modules improve precision.
+
+- **YOLOX-Nano:** Employs a decoupled head structure with an anchor-free approach, simplifying detection and enhancing adaptability to varying object sizes.
+
+- **NanoDet-M:** Utilizes a one-stage anchor-free framework with an enhanced Feature Pyramid Network (FPN) for improved multi-scale aggregation and efficient localization.
+
+- **MobileNet-SSD:** Uses MobileNetV3 backbone with SSDLite detection head, incorporating Squeeze-and-Excitation (SE) modules, h-swish activation, and Neural Architecture Search (NAS) for better accuracy and latency balance.
+
+## Selected Device
+
+The **Raspberry Pi 5** was chosen for this experiment due to its balance of computational power and affordability, making it suitable for real-time object detection. Its specifications are:
+
+- **Processor:** Quad-core ARM Cortex-A76 (2.4 GHz)
+- **Memory:** 8GB LPDDR4X RAM
+- **Storage:** 64GB MicroSD card
+- **Operating System:** Ubuntu Server
+
+Compared to higher-cost alternatives like the NVIDIA Jetson, the RPi5 provides a cost-effective, widely accessible solution with strong community support.
+
+---
+
+## Results & Discussion
+
+### Experimental Setup
+
+The experiments were conducted in a controlled environment to ensure consistency across evaluations. Object detection models were deployed using Docker containers, running exclusively on CPU-based inference. Two different Docker images were utilized:
+- `pytorch/torchserve:0.12.0-cpu` for non-standard YOLO models.
+- `ultralytics/ultralytics:latest-arm64` for standard YOLO models.
+
+The dataset was divided into training, validation, and test sets with a 70:15:15 ratio for balanced evaluation.
+
+### Hyperparameter Tuning
+
+The models were trained independently using the Adam optimizer with a learning rate of $5 \times 10^{-4}$ and a batch size of 64. A learning rate scheduler was applied based on validation loss for optimal convergence. Early stopping with a patience threshold of 10 epochs was used to enhance generalization performance.
+
+### Evaluating Detection Accuracy
+
+Detection accuracy was evaluated using **mAP@50** (IoU threshold at 50%) and **mAP@50-95** (average precision over thresholds from 50% to 95%). YOLO-based models achieved the highest accuracy, particularly YOLOv9t and YOLOv11n, with mAP@50 and mAP@50-95 scores of 0.973 and 0.78, respectively.
+
+| Model         | Near (mAP50 / mAP50-95) | Mid (mAP50 / mAP50-95) | Far (mAP50 / mAP50-95) | All (mAP50 / mAP50-95) |
+|---------------|-------------------------|------------------------|------------------------|------------------------|
+| YOLOv5n       | 0.986 / 0.853           | 0.957 / 0.724          | 0.924 / 0.655          | 0.956 / 0.734          |
+| YOLOv8n       | 0.989 / 0.858           | 0.953 / 0.724          | 0.928 / 0.666          | 0.96 / 0.738           |
+| YOLOv9t       | 0.99 / 0.892            | 0.964 / 0.769          | 0.951 / 0.726          | 0.973 / 0.778          |
+| YOLOv10n      | 0.983 / 0.843           | 0.955 / 0.71           | 0.941 / 0.688          | 0.963 / 0.73           |
+| YOLOv11n      | **0.992 / 0.894**       | **0.966 / 0.771**      | **0.96 / 0.72**        | **0.973 / 0.78**       |
+| YOLOX-nano    | 0.939 / 0.697           | 0.864 / 0.552          | 0.828 / 0.479          | 0.873 / 0.578          |
+| Nanodet-M     | 0.876 / 0.656           | 0.775 / 0.513          | 0.739 / 0.428          | 0.785 / 0.505          |
+| MobileNet-SSD | 0.744 / 0.46            | 0.429 / 0.193          | 0.412 / 0.163          | 0.536 / 0.28           |
+
+### Inference Latency Evaluation
+
+Inference latency was measured on a Raspberry Pi 5 using PyTorch and NCNN formats. The NCNN backend significantly reduced latency by over 60% for some models. The results are shown below:
+
+| Model         | PyTorch (Near) (ms) | PyTorch (Mid) (ms) | PyTorch (Far) (ms) | PyTorch (All) (ms) | NCNN (Near) (ms) | NCNN (Mid) (ms) | NCNN (Far) (ms) | NCNN (All) (ms) |
+|---------------|---------------------|--------------------|--------------------|--------------------|------------------|-----------------|------------------|------------------|
+| YOLOv5n       | 298.55               | 301.33             | 290.78             | 296.22             | 104.97           | 106.55          | 103.78           | 105.25           |
+| YOLOv8n       | 307.45               | 309.12             | 300.87             | 305.81             | 106.98           | 107.55          | 104.61           | 106.38           |
+| YOLOv9t       | 358.11               | 359.79             | 350.25             | 356.05             | 125.33           | 126.45          | 123.65           | 124.81           |
+| YOLOv10n      | 354.23               | 356.91             | 346.12             | 352.42             | -                | -               | -                | -                |
+| YOLOv11n      | 324.55               | 326.78             | 315.89             | 322.41             | 111.45           | 112.68          | 108.87           | 111.00           |
+| YOLOX-nano    | 240.33               | 242.10             | 235.82             | 238.75             | -                | -               | -                | -                |
+| Nanodet-M     | **149.55**           | **150.78**         | **144.21**         | **148.18**         | -                | -               | -                | -                |
+| MobileNet-SSD | 236.45               | 237.98             | 230.22             | 234.63             | -                | -               | -                | -                |
+
+### Key Takeaways
+
+- YOLOv9t and YOLOv11n outperform others in detection accuracy, particularly at far distances.
+- Detection accuracy decreases with distance but remains strong for YOLOv9t and YOLOv11n.
+- Smaller models (YOLOX-Nano, NanoDet-M, MobileNet-SSD) show lower accuracy due to reduced size and computational complexity.
+- The NCNN backend provides a significant reduction in inference latency, especially for YOLOv5n and YOLOv8n.
+- Inference latency is not significantly affected by camera distance.
+
