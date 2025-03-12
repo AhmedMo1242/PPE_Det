@@ -81,9 +81,9 @@ The PPE-Det dataset can be accessed via this [Google Drive Link](https://drive.g
 
 ### 📸 Sample Images
 Below are sample images representing the three distance ranges:
-- **Far Range**: ![Far Range Image](Images\far.jpg)
-- **Mid Range**: ![Mid Range Image](Images\mid.jpg)
-- **Near Range**: ![Near Range Image](Images\near.jpg)
+- **Far Range**: ![Far Range Image](Images/far.jpg)
+- **Mid Range**: ![Mid Range Image](Images/mid.jpg)
+- **Near Range**: ![Near Range Image](Images/near.jpg)
 
 
 
