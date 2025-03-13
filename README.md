@@ -144,7 +144,7 @@ The **Raspberry Pi 5** was chosen for this experiment due to its balance of comp
 - **Storage:** 64GB MicroSD card
 - **Operating System:** Ubuntu Server
 
-Compared to higher-cost alternatives like the NVIDIA Jetson, the RPi5 provides a cost-effective, widely accessible solution with strong community support.
+Compared to higher-cost alternatives like the NVIDIA Jetson, the Raspberry Pi 5 provides a cost-effective, widely accessible solution with strong community support.
 
 ---
 
